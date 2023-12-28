@@ -1,0 +1,107 @@
+body {
+    background-color: white;
+    margin: 0;
+    height: 100dvh;
+    width: 100dvw;
+    overflow: hidden;
+}
+
+form {
+    position: relative;
+}
+
+form button {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+    background: green;
+    color: white;
+    border-radius: 5px;
+    font-size: large;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+    
+
+form button:hover {
+    background: #283618;
+}
+
+form ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    overflow: scroll;
+    color: black;
+    position: absolute;
+    padding: 32px;
+}
+
+@media (orientation: portrait) {
+    #scanner-container {
+        width: 100dvw;
+        height: 50dvh;
+    }
+
+    #scanner-container video {
+        width: 100dvw;
+        height: 50dvh;
+        object-fit: cover;
+    }
+
+    header {
+        width: 100dvw;
+        position: fixed;
+        z-index: 1;
+    }
+
+    form {
+        width: 100dvw;
+        height: 40dvh;
+        position: fixed;
+        bottom: 0;
+    }
+}
+
+@media (orientation: landscape) {
+    #scanner-container {
+        width: 50dvw;
+        height: 100dvh;
+        position: fixed;
+        right: 0;
+        top: 0;
+    }
+
+    #scanner-container video {
+        width: 50dvw;
+        height: 100dvh;
+        object-fit: cover;
+    }
+
+    header {
+        width: 50dvw;
+        position: fixed;
+        left: 0;
+        top: 0;
+    }
+
+    form {
+        width: 50dvw;
+        position: fixed;
+        left: 0;
+        bottom: 0;
+    }
+}
+
+
+@media screen and (max-width: 600px) {
+    header nav a {
+        font-size: 24px;
+    }
+    
+}

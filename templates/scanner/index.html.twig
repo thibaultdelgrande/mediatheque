@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Scanner code barre{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript" src="{{ asset('quagga.min.js')}}"></script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/scanner.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div id="scanner-container"></div>
+    <form action="{{ path('app_scanner') }}" method="POST">
+        <ul id="result">
+        </ul>
+        <button type="submit">Ajouter tous les éléments à ma collection</button>
+    </form>
+    <script type="text/javascript">
+        let scannedCodes = [];
+
+        Quagga.init({
+            inputStream: {
+                name: "Live",
+                type: "LiveStream",
+                target: document.querySelector('#scanner-container'),
+                constraints: {
+                    facingMode: "environment"
+                },
+            },
+            decoder: {
+                readers: ["ean_reader"],
+                multiple: false, // Set to false to reduce error margin
+            }
+        }, function (err) {
+            if (err) {
+                console.error(err);
+                return;
+            }
+            console.log("Initialization finished. Ready to start");
+            Quagga.start();
+        });
+
+        Quagga.onDetected(function (result) {
+            let code = result.codeResult.code;
+            if (scannedCodes.includes(code)) {
+                console.log("Barcode already scanned: " + code);
+                return;
+            }
+            console.log("Barcode detected and processed: " + code);
+            scannedCodes.push(code);
+            // Effectuer une requete AJAX pour vérifier si le code est valide
+
+            fetch('/scanner/' + code).then( function (reponse) {
+                if (reponse.status === 200) {
+                    return reponse.json();
+                } else {
+                    throw new Error("Code invalide");
+                }
+            }).then( function (json) {
+                if (json.error !== undefined) {
+                    console.error(json.erreur);
+                }
+                else {
+                    let listItem = document.createElement("li");
+                    listItem.textContent = json.titre;
+                    let input = document.createElement("input");
+                    input.setAttribute("type", "hidden");
+                    input.setAttribute("name", "codes[]");
+                    input.setAttribute("value", code);
+                    listItem.appendChild(input);
+                    document.getElementById("result").appendChild(listItem);
+                }
+            }).catch( function (error) {
+                console.error(error);
+            });
+
+            
+        });
+    </script>
+{% endblock %}
