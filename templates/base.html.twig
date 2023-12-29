@@ -6,7 +6,7 @@
 			{% block title %}Welcome!
 			{% endblock %}
 		</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1.0; user-scalable=0;" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0; user-scalable=0;"/>
 		<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
 		{% block stylesheets %}
 			{{ ux_controller_link_tags() }}
@@ -19,15 +19,41 @@
 		{% endblock %}
 	</head>
 	<body>
-        <header>
-            <nav>
-                <ul>
-                    <li><a href="{{ path('app_home') }}">Home</a></li>
-                    <li><a href="{{ path('app_search') }}">Chercher</a></li>
-                    <li><a href="{{ path('app_scanner') }}">Scanner</a></li>
-                </ul>
-            </nav>
-        </header>
-		{% block body %}{% endblock %}
+		<header>
+			<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+				<div class="container-fluid">
+					<a class="navbar-brand" href="{{ path('app_home')}}">Médiathèque</a>
+					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse" id="navbarColor02">
+						<ul class="navbar-nav me-auto">
+							<li class="nav-item">
+								<a href="{{ path('app_scanner') }}" class="nav-link">Scanner</a>
+							</li>
+							{% if app.user %}
+								<li class="nav-item">
+									<a href="{{ path('app_logout') }}" class="nav-link">Déconnexion</a>
+								</li>
+							{% else %}
+								<li class="nav-item">
+									<a href="{{ path('app_login') }}" class="nav-link">Connexion</a>
+								</li>
+								<li class="nav-item">
+									<a href="{{ path('app_register') }}" class="nav-link">Inscription</a>
+								</li>
+							{% endif %}
+						</ul>
+						<form class="d-flex" action="{{ path('app_search')}}" method="get">
+							<input type="text" name="search" id="search" placeholder="Rechercher un élément">
+							<button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+						</form>
+					</div>
+				</div>
+			</nav>
+		</header>
+		<main class="m-3">
+			{% block body %}{% endblock %}
+		</main>
 	</body>
-</html>
+</html></body></body></html>

@@ -5,112 +5,141 @@
 
 {% block body %}
 
-<h1>Chercher un élément</h1>
+	<h1>Chercher un élément</h1>
 
-<form action="{{ path('app_search') }}" method="get">
-	<input type="text" name="search" id="search" placeholder="Rechercher un élément" value="{{ search }}">
-	<select name="limit" id="limit">
-		<option value="1" {% if limit == 1 %} selected {% endif %}>1 résultat</option>
-		<option value="10" {% if limit == 10 %} selected {% endif %}>10 résultats</option>
-		<option value="100" {% if limit == 100 %} selected {% endif %}>100 résultats</option>
-	</select>
-	<!-- type de document -->
-	<select name="type" id="type">
-		<option {% if type == 'all' %} selected {% endif %}>Tous les types</option>
-		<option value="livre" {% if type == 'livre' %} selected {% endif %}>Livre</option>
-		<option value="video" {% if type == 'video' %} selected {% endif %}>Vidéo</option>
-	</select>
-	<input type="submit" value="Rechercher">
-</form>
-
-{% if resultats is defined %}
-	{% if resultats is empty %}
-		<h2>Aucun résultat</h2>
-	{% else %}
-		<h2>{{ nb_resultats }}
-			résultat(s)</h2>
-		{% if pages|length > 1 %}
-			<div class="pagination">
-				{% if page_actuelle > 1 %}
-					<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page_actuelle - 1}) }}">Précédent</a>
-				{% endif %}
-				{% for page in pages %}
-					{% if page == page_actuelle %}
-						<span>{{ page }}</span>
-					{% else %}
-						<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page}) }}">{{ page }}</a>
-					{% endif %}
-				{% endfor %}
-				{% if page_actuelle < pages|length %}
-					<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page_actuelle + 1}) }}">Suivant</a>
-				{% endif %}
+	<form action="{{ path('app_search') }}" method="get">
+		<fieldset>
+			<div class="form-group row m-2">
+				<input type="text" name="search" id="search" placeholder="Rechercher un élément" value="{{ search }}" class="form-control m-2">
+				<select name="limit" id="limit" class="form-select m-2">
+					<option value="10" {% if limit == 10 %} selected {% endif %}>10 résultats</option>
+					<option value="20" {% if limit == 20 %} selected {% endif %}>20 résultats</option>
+					<option value="50" {% if limit == 50 %} selected {% endif %}>50 résultats</option>
+					<option value="100" {% if limit == 100 %} selected {% endif %}>100 résultats</option>
+				</select>
+				<!-- type de document -->
+				<select name="type" id="type" class="form-select m-2">
+					<option {% if type == 'all' %} selected {% endif %}>Tous les types</option>
+					<option value="livre" {% if type == 'livre' %} selected {% endif %}>Livre</option>
+					<option value="video" {% if type == 'video' %} selected {% endif %}>Vidéo</option>
+				</select>
+				<input type="submit" value="Rechercher" class="btn btn-primary m-2">
 			</div>
-		{% endif %}
-		<div class="resultats">
-			{% for item in resultats %}
-				<div class="item">
-					<h3>
-						{% if item.titre is defined %}
-							{{ item.titre }}
-						{% endif %}
-						{% if item.titre is defined and item.complement_titre is defined %}
-							-
-						{% endif %}
-						{% if item.complement_titre is defined %}
-							{{ item.complement_titre }}
-						{% endif %}
-						{% if item.numero_serie is defined %}
-							{{ item.numero_serie }}
-						{% endif %}
-						{% if item.annee is defined %}
-							({{ item.annee }})
-						{% endif %}
-					</h3>
-					{% if item.serie is defined %}
-						<i>{{ item.serie.titre }}
-						{% if item.serie.numero is defined %} {{ item.serie.numero }} {% endif %}</i>
+		</fieldset>
+	</form>
+
+	{% if resultats is defined %}
+		{% if resultats is empty %}
+			<h2>Aucun résultat</h2>
+		{% else %}
+			<h2>{{ nb_resultats }}
+				résultat(s)</h2>
+			{% if pages|length > 1 %}
+				<div class="pagination btn-group m-3" role="group">
+					{% if page_actuelle > 1 %}
+						<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page_actuelle - 1}) }}" class="btn btn-secondary">Précédent</a>
 					{% endif %}
-					<p>{{ item.type }}</p>
-					{% if item.auteur_short is defined %}
-						<p>{{ item.auteur_short }}</p>
-					{% endif %}
-					{% if item.auteur_secondaire_short is defined %}{% for short in item.auteur_secondaire_short %}
-						<p>{{ short }}</p>
+					{% for page in pages %}
+						{% if page == 1 or page == page_actuelle or page == page_actuelle - 1 or page == page_actuelle - 2 or page == page_actuelle + 1 or page == page_actuelle + 2 or page == pages|length or (page_actuelle < 2 and page == 4) or (page_actuelle < 3 and page == 5) or (page_actuelle > pages|length - 2 and page == pages|length - 4) or (page_actuelle > pages|length - 3 and page == pages|length - 5)	%}
+							{% if page == page_actuelle %}
+								<span class="btn btn-secondary active">{{ page }}</span>
+							{% else %}
+								<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page}) }}" class="btn btn-secondary">{{ page }}</a>
+							{% endif %}
+						{% endif %}
+						{% if (page_actuelle < pages|length - 2 and page == page_actuelle - 3) or (page_actuelle > 2 and page == page_actuelle + 4) or (page_actuelle < 3 and page == 6) or (page_actuelle > pages|length -3 and page == pages|length - 6)%}
+							<span class="btn btn-secondary">...</span>
+						{% endif %}
 					{% endfor %}
-				{% endif %}
-				{% if item.editeur is defined %}
-					<p>{{ item.editeur }}</p>
-				{% endif %}
-				{% if item.collection is defined %}
-					<p>{{ item.collection.titre }}
-					{% if item.collection.date is defined %}
-						({{ item.collection.date }})
-					{% endif %}</p>
-				{% endif %}
-				{% if item.resume is defined %}
-					<p>{{ item.resume }}</p>
-				{% endif %}
-				{% if item.code_barre is defined %}
-					<p>{{ item.code_barre}}</p>
-				{% endif %}
+					{% if page_actuelle < pages|length %}
+						<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page_actuelle + 1}) }}" class="btn btn-secondary">Suivant</a>
+					{% endif %}
+				</div>
+			{% endif %}
+			<div class="resultats">
+				{% for item in resultats %}
+					<div class="item card border-primary mb-3" style="max-width: 20rem;">
+						{% if item.serie is defined %}
+							<div class="card-header">
+								<i>{{ item.serie.titre }}
+									{% if item.serie.numero is defined %}
+										-
+										{{ item.serie.numero }}
+									{% endif %}
+								</i>
+							</div>
+						{% endif %}
+						<div class="card-body">
+							<h4 class="card-title">
+								{% if item.titre is defined %}
+									{{ item.titre }}
+								{% endif %}
+								{% if item.titre is defined and item.complement_titre is defined %}
+									-
+								{% endif %}
+								{% if item.complement_titre is defined %}
+									{{ item.complement_titre }}
+								{% endif %}
+								{% if item.numero_serie is defined %}
+									{{ item.numero_serie }}
+								{% endif %}
+								{% if item.annee is defined %}
+									({{ item.annee }})
+								{% endif %}
+							</h4>
+							{% if item.collection is defined %}
+								<h6 class="card-subtitle mb-2 text-muted">{{ item.collection.titre }}
+									{% if item.collection.date is defined %}
+										({{ item.collection.date }})
+									{% endif %}
+								</h6>
+							{% endif %}
+							{% if item.editeur is defined %}
+								<h6 class="card-subtitle mb-2 text-muted">{{ item.editeur }}</h6>
+							{% endif %}
+							{% if item.resume is defined %}
+								<p>{{ item.resume }}</p>
+							{% endif %}
+							<p class="card-text">{{ item.type }}</p>
+						</div>
+						<ul class="list-group list-group-flush">
+							{% if item.auteur_short is defined %}
+								<li class="list-group-item">{{ item.auteur_short }}</li>
+							{% endif %}
+							{% if item.auteur_secondaire_short is defined %}
+								{% for short in item.auteur_secondaire_short %}
+									<li class="list-group-item">{{ short }}</li>
+								{% endfor %}
+							{% endif %}
+						</ul>
+						{% if item.code_barre is defined %}
+							<div class="card-footer text-muted">{{ item.code_barre}}</div>
+						{% endif %}
+					</div>
+				{% endfor %}
 			</div>
-		{% endfor %}
-	</div>
-	{% if pages|length > 1 %}
-		<div class="pagination">
-			{% if page_actuelle > 1 %}
-				<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page_actuelle - 1}) }}">Précédent</a>
+			{% if pages|length > 1 %}
+				<div class="pagination btn-group m-3" role="group">
+					{% if page_actuelle > 1 %}
+						<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page_actuelle - 1}) }}" class="btn btn-secondary">Précédent</a>
+					{% endif %}
+					{% for page in pages %}
+						{% if page == 1 or page == page_actuelle or page == page_actuelle - 1 or page == page_actuelle - 2 or page == page_actuelle + 1 or page == page_actuelle + 2 or page == pages|length or (page_actuelle < 2 and page == 4) or (page_actuelle < 3 and page == 5) or (page_actuelle > pages|length - 2 and page == pages|length - 4) or (page_actuelle > pages|length - 3 and page == pages|length - 5)	%}
+							{% if page == page_actuelle %}
+								<span class="btn btn-secondary active">{{ page }}</span>
+							{% else %}
+								<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page}) }}" class="btn btn-secondary">{{ page }}</a>
+							{% endif %}
+						{% endif %}
+						{% if (page_actuelle < pages|length - 2 and page == page_actuelle - 3) or (page_actuelle > 2 and page == page_actuelle + 4) or (page_actuelle < 3 and page == 6) or (page_actuelle > pages|length -3 and page == pages|length - 6)%}
+							<span class="btn btn-secondary">...</span>
+						{% endif %}
+					{% endfor %}
+					{% if page_actuelle < pages|length %}
+						<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page_actuelle + 1}) }}" class="btn btn-secondary">Suivant</a>
+					{% endif %}
+				</div>
 			{% endif %}
-			{% for page in pages %}
-				{% if page == page_actuelle %}
-					<span>{{ page }}</span>
-				{% else %}
-					<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page}) }}">{{ page }}</a>
-				{% endif %}
-			{% endfor %}
-			{% if page_actuelle < pages|length %}
-				<a href="{{ path('app_search', {'search': search, 'limit': limit, 'page': page_actuelle + 1}) }}">Suivant</a>
-			{% endif %}
-		</div>
+		{% endif %}
 	{% endif %}
-{% endif %}{% endif %}{% endblock %}
+{% endblock %}

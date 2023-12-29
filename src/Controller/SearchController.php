@@ -16,7 +16,7 @@ class SearchController extends AbstractController
         // Récupérer les données du formulaire
         if (isset($_GET['search'])) {
             $search = $_GET['search'];
-            $limit = $_GET['limit'] ?? 1;
+            $limit = $_GET['limit'] ?? 20;
             $page = $_GET['page'] ?? 1;
             $type = $_GET['type'] ?? 'all';
             

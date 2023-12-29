@@ -6,11 +6,11 @@ body {
     overflow: hidden;
 }
 
-form {
+#ajouter {
     position: relative;
 }
 
-form button {
+#ajouter button {
     display: block;
     margin: 0 auto;
     padding: 10px 20px;
@@ -46,6 +46,10 @@ form ul {
     #scanner-container {
         width: 100dvw;
         height: 50dvh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        z-index: 0;
     }
 
     #scanner-container video {
@@ -56,11 +60,10 @@ form ul {
 
     header {
         width: 100dvw;
-        position: fixed;
         z-index: 1;
     }
 
-    form {
+    #ajouter {
         width: 100dvw;
         height: 40dvh;
         position: fixed;
@@ -70,7 +73,7 @@ form ul {
 
 @media (orientation: landscape) {
     #scanner-container {
-        width: 50dvw;
+        width: 50vw;
         height: 100dvh;
         position: fixed;
         right: 0;
@@ -78,30 +81,22 @@ form ul {
     }
 
     #scanner-container video {
-        width: 50dvw;
+        width: 50vw;
         height: 100dvh;
         object-fit: cover;
     }
 
     header {
-        width: 50dvw;
+        width: 50vw;
         position: fixed;
         left: 0;
         top: 0;
     }
 
-    form {
+    #ajouter {
         width: 50dvw;
         position: fixed;
         left: 0;
         bottom: 0;
     }
-}
-
-
-@media screen and (max-width: 600px) {
-    header nav a {
-        font-size: 24px;
-    }
-    
 }
